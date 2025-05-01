@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuVeículos - Sistema de Gerenciamento</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary-color: #4158D0;
+            --secondary-color: #C850C0;
+            --accent-color: #FFCC70;
+            --background-color: #f0f2f5;
+            --card-background: rgba(255, 255, 255, 0.95);
+            --text-color: #333;
+            --shadow: 0 8px 30px rgba(0,0,0,0.12);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 40%, transparent 50%);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            gap: 10px;
+        }
+
+        .tab {
+            padding: 12px 30px;
+            cursor: pointer;
+            background: var(--card-background);
+            border: none;
+            border-radius: 25px;
+            font-weight: 500;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .tab.active {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: var(--card-background);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .card h3 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-size: 1.5em;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .card h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.9);
+        }
+
+        input:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(65,88,208,0.1);
+        }
+
+        button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1.1em;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(65,88,208,0.3);
+        }
+
+        .lista {
+            margin-top: 30px;
+        }
+
+        .veiculo-item {
+            background: var(--card-background);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .veiculo-item:hover {
+            transform: translateX(10px);
+        }
+
+        .veiculo-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+        }
+
+        .veiculo-item p {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .veiculo-item strong {
+            color: var(--primary-color);
+        }
+
+        /* Ícones para os campos */
+        .form-group::before {
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 43px;
+            color: #888;
+            z-index: 1;
+        }
+
+        .form-group.marca::before { content: "\f1b9"; }
+        .form-group.modelo::before { content: "\f5e4"; }
+        .form-group.ano::before { content: "\f073"; }
+        .form-group.preco::before { content: "\f155"; }
+
+        /* Animações */
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .veiculo-item {
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .menu {
+                grid-template-columns: 1fr;
+            }
+
+            .tab {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+
+        /* Status Badge */
+        .status-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+            background: linear-gradient(45deg, #00b09b, #96c93d);
+            color: white;
+        }
+
+        /* Estatísticas */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: var(--card-background);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card i {
+            font-size: 2em;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .stat-number {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-car"></i> LuVeículos</h1>
+    </header>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="mostrarAba('cadastro')">
+                <i class="fas fa-plus-circle"></i> Cadastro
+            </button>
+            <button class="tab" onclick="mostrarAba('lista')">
+                <i class="fas fa-list"></i> Listagem
+            </button>
+        </div>
+
+        <!-- Estatísticas -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <i class="fas fa-car"></i>
+                <div class="stat-number" id="total-carros">0</div>
+                <div>Carros</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-motorcycle"></i>
+                <div class="stat-number" id="total-motos">0</div>
+                <div>Motos</div>
+            </div>
+            <div class="stat-card">
+                <i class="fas fa-money-bill-wave"></i>
+                <div class="stat-number" id="valor-total">R$ 0</div>
+                <div>Valor Total</div>
+            </div>
+        </div>
+
+        <div id="cadastro" class="menu">
+            <div class="card">
+                <div class="status-badge">Carro</div>
+                <h3><i class="fas fa-car"></i> Cadastro de Carro</h3>
+                <form id="formCarro">
+                    <div class="form-group marca">
+                        <label for="marcaCarro">Marca:</label>
+                        <input type="text" id="marcaCarro" required placeholder="Ex: Toyota">
+                    </div>
+                    <div class="form-group modelo">
+                        <label for="modeloCarro">Modelo:</label>
+                        <input type="text" id="modeloCarro" required placeholder="Ex: Corolla">
+                    </div>
+                    <div class="form-group ano">
+                        <label for="anoCarro">Ano:</label>
+                        <input type="number" id="anoCarro" min="1900" required placeholder="Ex: 2023">
+                    </div>
+                    <div class="form-group preco">
+                        <label for="precoCarro">Preço:</label>
+                        <input type="number" id="precoCarro" step="0.01" min="0" required placeholder="Ex: 100000">
+                    </div>
+                    <button type="submit"><i class="fas fa-save"></i> Cadastrar Carro</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="status-badge">Moto</div>
+                <h3><i class="fas fa-motorcycle"></i> Cadastro de Moto</h3>
+                <form id="formMoto">
+                    <div class="form-group marca">
+                        <label for="marcaMoto">Marca:</label>
+                        <input type="text" id="marcaMoto" required placeholder="Ex: Honda">
+                    </div>
+                    <div class="form-group modelo">
+                        <label for="modeloMoto">Modelo:</label>
+                        <input type="text" id="modeloMoto" required placeholder="Ex: CB 500">
+                    </div>
+                    <div class="form-group ano">
+                        <label for="anoMoto">Ano:</label>
+                        <input type="number" id="anoMoto" min="1900" required placeholder="Ex: 2023">
+                    </div>
+                    <div class="form-group preco">
+                        <label for="precoMoto">Preço:</label>
+                        <input type="number" id="precoMoto" step="0.01" min="0" required placeholder="Ex: 30000">
+                    </div>
+                    <button type="submit"><i class="fas fa-save"></i> Cadastrar Moto</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="lista" class="lista" style="display: none;">
+            <h2>Veículos Cadastrados</h2>
+            <div id="listaVeiculos"></div>
+        </div>
+    </div>
+
+    <script>
+        function mostrarAba(aba) {
+            document.getElementById('cadastro').style.display = aba === 'cadastro' ? 'grid' : 'none';
+            document.getElementById('lista').style.display = aba === 'lista' ? 'block' : 'none';
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        let carros = [];
+        let motos = [];
+
+        function atualizarEstatisticas() {
+            document.getElementById('total-carros').textContent = carros.length;
+            document.getElementById('total-motos').textContent = motos.length;
+            
+            const valorTotal = [...carros, ...motos].reduce((total, veiculo) => 
+                total + parseFloat(veiculo.preco), 0);
+            document.getElementById('valor-total').textContent = 
+                `R$ ${valorTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`;
+        }
+
+        document.getElementById('formCarro').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const carro = {
+                marca: document.getElementById('marcaCarro').value,
+                modelo: document.getElementById('modeloCarro').value,
+                ano: document.getElementById('anoCarro').value,
+                preco: document.getElementById('precoCarro').value
+            };
+            carros.push(carro);
+            this.reset();
+            atualizarListagem();
+            atualizarEstatisticas();
+            alert('Carro cadastrado com sucesso!');
+        });
+
+        document.getElementById('formMoto').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const moto = {
+                marca: document.getElementById('marcaMoto').value,
+                modelo: document.getElementById('modeloMoto').value,
+                ano: document.getElementById('anoMoto').value,
+                preco: document.getElementById('precoMoto').value
+            };
+            motos.push(moto);
+            this.reset();
+            atualizarListagem();
+            atualizarEstatisticas();
+            alert('Moto cadastrada com sucesso!');
+        });
+
+        function atualizarListagem() {
+            const lista = document.getElementById('listaVeiculos');
+            lista.innerHTML = '';
+
+            if (carros.length > 0) {
+                lista.innerHTML += '<h3><i class="fas fa-car"></i> Carros:</h3>';
+                carros.forEach((carro, index) => {
+                    lista.innerHTML += `
+                        <div class="veiculo-item">
+                            <p><strong><i class="fas fa-trademark"></i> Marca:</strong> ${carro.marca}</p>
+                            <p><strong><i class="fas fa-info-circle"></i> Modelo:</strong> ${carro.modelo}</p>
+                            <p><strong><i class="fas fa-calendar"></i> Ano:</strong> ${carro.ano}</p>
+                            <p><strong><i class="fas fa-money-bill-wave"></i> Preço:</strong> R$ ${parseFloat(carro.preco).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
+                        </div>
+                    `;
+                });
+            }
+
+            if (motos.length > 0) {
+                lista.innerHTML += '<h3><i class="fas fa-motorcycle"></i> Motos:</h3>';
+                motos.forEach((moto, index) => {
+                    lista.innerHTML += `
+                        <div class="veiculo-item">
+                            <p><strong><i class="fas fa-trademark"></i> Marca:</strong> ${moto.marca}</p>
+                            <p><strong><i class="fas fa-info-circle"></i> Modelo:</strong> ${moto.modelo}</p>
+                            <p><strong><i class="fas fa-calendar"></i> Ano:</strong> ${moto.ano}</p>
+                            <p><strong><i class="fas fa-money-bill-wave"></i> Preço:</strong> R$ ${parseFloat(moto.preco).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
+                        </div>
+                    `;
+                });
+            }
+        }
+    </script>
+</body>
+</html>
